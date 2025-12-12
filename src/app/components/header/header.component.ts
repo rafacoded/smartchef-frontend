@@ -3,7 +3,7 @@ import {IonicModule} from "@ionic/angular";
 import {CommonModule} from "@angular/common";
 import {RouterModule} from "@angular/router";
 import {addIcons} from "ionicons";
-import {personCircleOutline} from "ionicons/icons";
+import {personCircleOutline, readerOutline} from "ionicons/icons";
 
 @Component({
   selector: 'app-header',
@@ -15,7 +15,7 @@ import {personCircleOutline} from "ionicons/icons";
 export class HeaderComponent {
 
   constructor() {
-    addIcons({ personCircleOutline });
+    addIcons({ personCircleOutline, readerOutline });
 
   }
 

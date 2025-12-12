@@ -1,0 +1,29 @@
+<ion-card (click)="verDetalle()">
+
+  <img [src]="receta.imagen" [alt]="receta.titulo">
+
+  <ion-card-header>
+    <ion-card-title>{{ receta.titulo }}</ion-card-title>
+
+    <ion-card-subtitle>
+      <ion-chip>
+        <ion-label>{{ receta.categoria }}</ion-label>
+      </ion-chip>
+
+      <ion-chip [color]="getDificultadColor(receta.dificultad)">
+        <ion-label>{{ receta.dificultad }}</ion-label>
+      </ion-chip>
+
+    </ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-buttons>
+      <ion-button>
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="danger" (click)="onEliminar()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-card-content>
+</ion-card>

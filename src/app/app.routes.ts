@@ -13,5 +13,14 @@ export const routes: Routes = [
     path: 'historial',
     loadComponent: () => import('./pages/historial/historial.page').then( m => m.HistorialPage)
   },
+  {
+    path: 'detalle-receta/:id',
+    loadComponent: () =>
+      import('./pages/detalle-receta/detalle-receta.page').then(
+        (m) => m.DetalleRecetaPage
+      )
+  },
+
+
 
 ];
