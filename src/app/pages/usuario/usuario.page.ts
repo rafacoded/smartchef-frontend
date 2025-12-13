@@ -18,10 +18,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class UsuarioPage {
   private toastCtrl = inject(ToastController);
-  // props de prueba
-  username = 'Julián Martínez';
-  userSince = 'abril 2025';
-  avatar = 'assets/resources/usuario.png'; // Imagen por defecto
+  username = 'Rafa T';
+  userSince = 'december 2025';
+  avatar = 'assets/resources/usuario.png';
 
   constructor() {
     addIcons({logOutOutline, settingsOutline, calendarOutline, documentTextOutline, barChartOutline, notificationsOutline, cameraOutline, moonOutline})
@@ -52,7 +51,6 @@ export class UsuarioPage {
 
   logout() {
     this.showToast('Sesión cerrada');
-    // Aquí cambiar para limpiar tokens o navegar al login
   }
 
 }

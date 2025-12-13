@@ -35,3 +35,23 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+:root {
+  /* Brand colors */
+  --sc-primary: #CC9B6B;     /* tarjetas, botones principales, <a> */
+  --sc-secondary: #C4BC94;   /* botones, popups, chips normales */
+  --sc-accent: #FADBB1;      /* botones secundarios */
+  --sc-success: #94C497;     /* chips disponibles */
+  --sc-danger: #C49494;      /* chips no disponibles */
+
+  /* Base colors */
+  --sc-black: #000000;
+  --sc-white: #FFFFFF;
+}
+
+/* Tipografía global */
+* {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+

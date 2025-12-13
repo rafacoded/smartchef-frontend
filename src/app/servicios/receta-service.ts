@@ -29,7 +29,7 @@ export class RecetaService {
   }
 
   asociarIngrediente(asociacion : AsociarIngrediente) {
-    return this.http.put("/api/acuario/planta/vincular", asociacion)
+    return this.http.put("/api/receta/ingrediente/vincular", asociacion)
   }
 
   eliminar(id:number) {

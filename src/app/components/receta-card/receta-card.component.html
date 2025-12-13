@@ -5,8 +5,8 @@
   <ion-card-header>
     <ion-card-title>{{ receta.titulo }}</ion-card-title>
 
-    <ion-card-subtitle>
-      <ion-chip>
+    <ion-card-subtitle class="chips">
+      <ion-chip class="chip-normal">
         <ion-label>{{ receta.categoria }}</ion-label>
       </ion-chip>
 
@@ -16,13 +16,14 @@
 
     </ion-card-subtitle>
   </ion-card-header>
-  <ion-card-content>
+
+  <ion-card-content class="card-actions">
     <ion-buttons>
       <ion-button>
-        <ion-icon name="pencil-outline"></ion-icon>
+        <ion-icon fill="clear" name="pencil-outline"></ion-icon>
       </ion-button>
       <ion-button color="danger" (click)="onEliminar()">
-        <ion-icon name="trash-outline"></ion-icon>
+        <ion-icon fill="clear" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-card-content>

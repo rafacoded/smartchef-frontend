@@ -2,14 +2,20 @@
 
 <ion-content [fullscreen]="true">
 
-  @for(receta of recetas; track receta.idReceta) {
-    <app-receta-card
-      [receta]="receta"
-      (eliminar)="confirmarEliminar($event)">
-    </app-receta-card>
-  }
+  <div class="recetas-list">
+    @for(receta of recetas; track receta.idReceta) {
+      <app-receta-card
+        [receta]="receta"
+        (eliminar)="confirmarEliminar($event)">
+      </app-receta-card>
+    }
+  </div>
 
-  <ion-button id="open-modal" expand="block">Añadir Receta</ion-button>
+
+  <ion-button id="open-modal"  class="btn-icon">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+
   <!-- MODAL AÑADIR RECETA -->
 
   <ion-modal trigger="open-modal" >

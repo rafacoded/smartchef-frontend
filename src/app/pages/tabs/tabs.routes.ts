@@ -27,10 +27,17 @@ export const routes: Routes = [
           import('../favoritos/favoritos.page').then((m) => m.FavoritosPage),
       },
       {
-        path: 'compras',
+        path: 'listas-compra',
         loadComponent: () =>
-          import('../compra/compra.page').then((m) => m.CompraPage),
+          import('../listas-compra/listas-compra.page')
+            .then(m => m.ListasCompraPage)
       },
+      {
+        path: 'detalle-lista/:id',
+        loadComponent: () =>
+          import('../detalle-lista/detalle-lista.page').then((m) => m.DetalleListaPage),
+      },
+
 
     ],
   },

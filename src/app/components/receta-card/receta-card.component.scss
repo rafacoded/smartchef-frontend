@@ -1,0 +1,43 @@
+.receta-card {
+  background: var(--sc-primary);
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 16px;
+  color: var(--sc-white);
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  ion-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chip-normal {
+  background: var(--sc-secondary);
+  color: var(--sc-black);
+}
+
+.chip-dificultad {
+  background: var(--sc-accent);
+  color: var(--sc-black);
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  ion-button {
+    color: var(--sc-primary);
+  }
+}

@@ -7,7 +7,7 @@ import {HeaderComponent} from "../../components/header/header.component";
   templateUrl: 'favoritos.page.html',
   styleUrls: ['favoritos.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, HeaderComponent,],
+  imports: [ IonContent, HeaderComponent,],
 })
 export class FavoritosPage {
   constructor() {}

@@ -6,7 +6,7 @@ import {HeaderComponent} from "../../components/header/header.component";
   selector: 'app-buscar',
   templateUrl: 'buscar.page.html',
   styleUrls: ['buscar.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, HeaderComponent,]
+  imports: [ IonContent, HeaderComponent,]
 })
 export class BuscarPage {
 

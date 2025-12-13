@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar class="sc-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/tabs/listas-compra"
+        text="">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle lista</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+
+    @for (item of items; track item.id) {
+      <ion-item>
+        <ion-checkbox slot="start"></ion-checkbox>
+
+        <ion-label>
+          {{ item.nombre }}
+          <p>{{ item.cantidad }} {{ item.unidad }}</p>
+        </ion-label>
+      </ion-item>
+    }
+
+  </ion-list>
+
+</ion-content>

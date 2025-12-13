@@ -1,70 +1,101 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="sc-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/home" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ receta?.titulo }}</ion-title>
+    <ion-title>Receta</ion-title>
   </ion-toolbar>
 </ion-header>
+
+
 
 <ion-content>
 
   @if (receta) {
 
-    <div class="hero-image">
+    <div class="sc-hero">
       <img [src]="receta.imagen" alt="Imagen de la receta" />
 
-      <div class="hero-title-overlay">
-        <ion-text class="titulo">{{ receta.titulo }}</ion-text>
+      <div class="sc-hero-overlay">
+        <h1 class="sc-hero-title">{{ receta.titulo }}</h1>
       </div>
     </div>
 
-    <div class="content-wrapper">
+    <div class="sc-page">
 
-
-      <div class="chips-row">
-        <ion-chip [color]="mapDificultadColor(receta.dificultad)">
+      <div class="sc-chips-row">
+        <ion-chip [color]="getDificultadColor(receta.dificultad)">
           <ion-label>{{ receta.dificultad }}</ion-label>
         </ion-chip>
 
-        <ion-chip color="tertiary">
+        <ion-chip class="chip-normal">
           <ion-label>{{ receta.categoria }}</ion-label>
         </ion-chip>
 
-        <ion-chip color="secondary">
+        <ion-chip class="chip-time">
           <ion-icon name="time-outline"></ion-icon>
           <ion-label>{{ receta.tiempoPreparacion }} min</ion-label>
         </ion-chip>
       </div>
 
-      <section class="section">
-        <ion-text >Descripción</ion-text>
-        <p>{{ receta.descripcion }}</p>
+      <section class="sc-section">
+        <h2 class="sc-section-title">Descripción</h2>
+        <p class="sc-text">{{ receta.descripcion }}</p>
       </section>
 
-      <section class="listaIngredientes">
-        <ion-text >Ingredientes</ion-text>
-        @for (ingrediente of receta.i)
-      </section>
+      <section class="sc-section">
 
-      <section class="section">
-        <ion-text>Pasos a seguir</ion-text>
+        <div class="sc-section-header">
+          <h2 class="sc-section-title">Ingredientes</h2>
 
-        <ion-list inset="true">
-          @for (paso of receta.pasos; track paso.orden) {
-            <ion-item lines="full">
+          <ion-button
+            fill="clear"
+            class="btn-icon"
+            slot="end">
+            <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <ion-list class="ingredients-list">
+          @for (ing of ingredientesMock; track ing.id) {
+            <ion-item lines="none">
+              <ion-checkbox slot="start"></ion-checkbox>
+
               <ion-label>
-                <strong>Paso {{ paso.orden }}:</strong>
-                <br />
-                {{ paso.descripcion }}
+                <h3>{{ ing.nombre }}</h3>
               </ion-label>
+
+              <ion-note slot="end">
+                {{ ing.cantidad }} {{ ing.unidad }}
+              </ion-note>
             </ion-item>
           }
         </ion-list>
+
       </section>
 
-    </div>
+      <section class="sc-section">
+        <h2 class="sc-section-title">Preparación</h2>
 
+        <ion-list inset="true">
+
+          @for (paso of receta.pasos; track paso.orden) {
+            <ion-item lines="full" class="step-item">
+
+              <div class="step-number">{{ paso.orden }}</div>
+
+              <div class="step-content">{{ paso.descripcion }}</div>
+
+            </ion-item>
+          }
+
+        </ion-list>
+      </section>
+
+
+    </div>
   }
 
 </ion-content>
+

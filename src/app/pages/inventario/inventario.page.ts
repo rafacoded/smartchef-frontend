@@ -9,7 +9,7 @@ import {HeaderComponent} from "../../components/header/header.component";
   templateUrl: './inventario.page.html',
   styleUrls: ['./inventario.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, HeaderComponent]
+  imports: [IonContent, CommonModule, FormsModule, HeaderComponent]
 })
 export class InventarioPage implements OnInit {
 

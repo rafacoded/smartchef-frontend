@@ -1,12 +1,10 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {
   IonHeader, IonToolbar,
-  IonTitle, IonContent, IonCard,
-  IonCardHeader, IonCardTitle, IonCardSubtitle,
-  IonChip, IonLabel,
+  IonTitle, IonContent,
   IonButton, IonModal, IonItem,
   IonInput, IonSelect, IonSelectOption,
-  IonButtons, IonIcon, IonList, IonCardContent
+  IonButtons, IonList, IonIcon
 } from '@ionic/angular/standalone';
 
 import {HeaderComponent} from "../../components/header/header.component";
@@ -15,7 +13,7 @@ import {RecetaService} from "../../servicios/receta-service";
 import {FormsModule} from "@angular/forms";
 
 import {addIcons} from "ionicons";
-import {pencilOutline, trashOutline } from "ionicons/icons";
+import {addOutline, pencilOutline, trashOutline} from "ionicons/icons";
 import {AlertController} from "@ionic/angular";
 import {RecetaCardComponent} from "../../components/receta-card/receta-card.component";
 
@@ -23,7 +21,7 @@ import {RecetaCardComponent} from "../../components/receta-card/receta-card.comp
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, HeaderComponent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonChip, IonLabel, IonButton, IonModal, IonItem, IonInput, FormsModule, IonSelect, IonSelectOption, IonButtons, IonIcon, IonList, IonCardContent, RecetaCardComponent,],
+  imports: [IonHeader, IonIcon, IonToolbar, IonTitle, IonContent, HeaderComponent, IonButton, IonModal, IonItem, IonInput, FormsModule, IonSelect, IonSelectOption, IonButtons, IonList, RecetaCardComponent,]
 })
 export class HomePage implements OnInit {
 
@@ -49,7 +47,7 @@ export class HomePage implements OnInit {
 
 
   constructor() {
-    addIcons({trashOutline, pencilOutline })
+    addIcons({trashOutline, pencilOutline, addOutline })
   }
 
   ngOnInit() {

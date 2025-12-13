@@ -44,7 +44,7 @@ export class RecetaCardComponent{
   getDificultadColor(dificultad: string) {
     switch (dificultad) {
       case "FACIL": return "success";
-      case "MEDIO": return "warning";
+      case "MEDIA": return "warning";
       case "DIFICIL": return "danger";
       default: return "medium";
     }

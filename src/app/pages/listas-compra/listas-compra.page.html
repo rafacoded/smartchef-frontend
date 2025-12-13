@@ -1,0 +1,23 @@
+<app-header title="Lista de compra"></app-header>
+
+<ion-content>
+
+  @for (lista of listasCompra; track lista.id) {
+
+    <ion-card
+      class="shopping-card"
+      (click)="abrirLista(lista.id)">
+
+      <ion-card-header>
+        <ion-card-title>{{ lista.nombre }}</ion-card-title>
+        <ion-card-subtitle>
+          {{ lista.totalItems }} artículos
+        </ion-card-subtitle>
+      </ion-card-header>
+
+    </ion-card>
+
+  }
+
+</ion-content>
+
