@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Receta, RecetaCrear} from "../modelos/Receta";
 import {Observable} from "rxjs";
 import {AsociarIngrediente} from "../modelos/AsociarIngrediente";
-import { environment } from "src/environments/environment";
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +36,8 @@ export class RecetaService {
     return this.http.put<void>(`${this.apiUrl}/recetas/${id}`, receta);
   }
 
-  asociarIngrediente(asociacion : AsociarIngrediente) {
-    return this.http.put("/api/receta/ingrediente/vincular", asociacion)
+  asociarIngrediente(asociacion: AsociarIngrediente) {
+    return this.http.put(`${this.apiUrl}/receta/ingrediente/vincular`, asociacion);
   }
 
   eliminar(id:number) {

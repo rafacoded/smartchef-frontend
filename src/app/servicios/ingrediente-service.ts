@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { IngredienteGlobal } from "../modelos/IngredienteGlobal";
-import { environment } from "src/environments/environment";
+import { environment } from "../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class IngredienteService {
