@@ -1,7 +1,7 @@
 {
   "/api": {
-    "target": "http://localhost:8080",
-    "secure": false,
+    "target": "https://smartchef-backend-hl0l.onrender.com",
+    "secure": true,
     "changeOrigin": true,
     "logLevel": "debug"
   }
