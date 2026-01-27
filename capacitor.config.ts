@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'smartchef',
+  appId: 'com.rafaa.smartchef',
+  appName: 'SmartChef',
   webDir: 'www'
 };
 
