@@ -1,146 +1,245 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
-  IonHeader, IonToolbar,
-  IonTitle, IonContent,
-  IonButton, IonModal, IonItem,
-  IonInput, IonSelect, IonSelectOption,
-  IonButtons, IonList, IonIcon
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonModal,
+  IonItem, IonInput, IonSelect, IonSelectOption, IonButtons, IonList,
+  IonIcon, IonLabel, IonGrid, IonRow, IonCol
 } from '@ionic/angular/standalone';
 
-import {HeaderComponent} from "../../components/header/header.component";
-import {Receta, RecetaCrear} from "../../modelos/Receta";
-import {RecetaService} from "../../servicios/receta-service";
-import {FormsModule} from "@angular/forms";
+import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { addOutline, pencilOutline, trashOutline } from 'ionicons/icons';
+import { AlertController } from '@ionic/angular';
 
-import {addIcons} from "ionicons";
-import {addOutline, pencilOutline, trashOutline} from "ionicons/icons";
-import {AlertController} from "@ionic/angular";
-import {RecetaCardComponent} from "../../components/receta-card/receta-card.component";
+import { HeaderComponent } from '../../components/header/header.component';
+import { Receta, RecetaCrear } from '../../modelos/Receta';
+import { RecetaService } from '../../servicios/receta-service';
+import { RecetaCardComponent } from '../../components/receta-card/receta-card.component';
+
+import { IngredienteService } from '../../servicios/ingrediente-service';
+import { IngredienteGlobal } from '../../modelos/IngredienteGlobal';
+
+type ModoModal = 'crear' | 'editar';
+
+type RecetaDetalle = {
+  idReceta: number;
+  titulo: string;
+  descripcion: string;
+  tiempoPreparacion: number;
+  dificultad: 'FACIL' | 'MEDIA' | 'DIFICIL';
+  imagen?: string | null;
+  pasos: { orden: number; descripcion: string }[];
+  ingredientes: { idIngrediente: number; nombreIngrediente: string; cantidad: number; unidad: string }[];
+};
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonIcon, IonToolbar, IonTitle, IonContent, HeaderComponent, IonButton, IonModal, IonItem, IonInput, FormsModule, IonSelect, IonSelectOption, IonButtons, IonList, RecetaCardComponent,]
+  standalone: true,
+  imports: [
+    IonHeader, IonIcon, IonToolbar, IonTitle, IonContent, HeaderComponent,
+    IonButton, IonModal, IonItem, IonInput, FormsModule, IonSelect,
+    IonSelectOption, IonButtons, IonList, RecetaCardComponent, IonLabel,
+    IonGrid, IonRow, IonCol
+  ]
 })
 export class HomePage implements OnInit {
 
   @ViewChild(IonModal) modal!: IonModal;
 
   private recetaService = inject(RecetaService);
-
+  private ingredienteService = inject(IngredienteService);
   private alertController = inject(AlertController);
 
   protected recetas: Receta[] = [];
 
-  protected formularioReceta: RecetaCrear = {
-    titulo : "",
-    descripcion : "",
-    tiempoPreparacion : 0,
-    dificultad : "",
-    pasos : [],
-    imagen: "",
+  protected ingredientesDisponibles: IngredienteGlobal[] = [];
+  busquedaIngrediente = '';
 
-  };
+  modoModal: ModoModal = 'crear';
+  recetaEditandoId: number | null = null;
 
-  pasos = [{ descripcion: "" }];
+  pasos = [{ descripcion: '' }];
 
+  protected formularioReceta: RecetaCrear = this.crearFormularioVacio();
 
   constructor() {
-    addIcons({trashOutline, pencilOutline, addOutline })
+    addIcons({ trashOutline, pencilOutline, addOutline });
   }
 
   ngOnInit() {
     this.cargarRecetas();
   }
 
+  private crearFormularioVacio(): RecetaCrear {
+    return {
+      titulo: '',
+      descripcion: '',
+      tiempoPreparacion: null as any,
+      dificultad: null,
+      imagen: null,
+      pasos: [],
+      ingredientes: []
+    };
+  }
+
+  async abrirCrear() {
+    this.modoModal = 'crear';
+    this.recetaEditandoId = null;
+    this.formularioReceta = this.crearFormularioVacio();
+    this.pasos = [{ descripcion: '' }];
+    this.ingredientesDisponibles = [];
+    this.busquedaIngrediente = '';
+    await this.modal.present();
+  }
+
+  async abrirEditar(receta: Receta) {
+    this.modoModal = 'editar';
+    this.recetaEditandoId = receta.idReceta;
+
+    this.recetaService.obtenerPorId(receta.idReceta).subscribe({
+      next: async (detalle: any) => {
+        const d: RecetaDetalle = detalle;
+
+        this.formularioReceta = {
+          titulo: d.titulo,
+          descripcion: d.descripcion,
+          tiempoPreparacion: d.tiempoPreparacion as any,
+          dificultad: d.dificultad,
+          imagen: d.imagen ?? null,
+          pasos: [],
+          ingredientes: d.ingredientes.map(i => ({
+            idIngrediente: i.idIngrediente,
+            nombre: i.nombreIngrediente,
+            cantidad: i.cantidad,
+            unidad: i.unidad as any
+          }))
+        };
+
+        this.pasos = d.pasos?.length
+          ? d.pasos
+            .sort((a, b) => a.orden - b.orden)
+            .map(p => ({ descripcion: p.descripcion }))
+          : [{ descripcion: '' }];
+
+        await this.modal.present();
+      },
+      error: err => console.error('Error obteniendo detalle receta', err)
+    });
+  }
+
   cancel() {
+    // reset por si reabres
+    this.formularioReceta = this.crearFormularioVacio();
+    this.pasos = [{ descripcion: '' }];
+    this.ingredientesDisponibles = [];
+    this.busquedaIngrediente = '';
     this.modal.dismiss(null, 'cancel');
   }
 
-  crearReceta() {
-    const dto = {
+  guardarReceta() {
+    // Validaciones mínimas (backend valida también)
+    if (!this.formularioReceta.titulo?.trim()) return;
+    if (!this.formularioReceta.descripcion?.trim()) return;
+    if (!this.formularioReceta.dificultad) return;
+    if (!this.formularioReceta.tiempoPreparacion) return;
+    if (!this.formularioReceta.ingredientes?.length) return;
+    if (!this.pasos?.length || !this.pasos.some(p => p.descripcion?.trim())) return;
+
+    const dto: RecetaCrear = {
       ...this.formularioReceta,
       pasos: this.recopilarPasos()
     };
-    this.recetaService.crearReceta(dto).subscribe({
-      next: (data) => {
-        console.log("Receta creada: ", data);
+
+    if (this.modoModal === 'crear') {
+      this.recetaService.crearReceta(dto).subscribe({
+        next: () => {
+          this.cancel();
+          this.cargarRecetas();
+        },
+        error: err => console.error('Error al crear receta', err)
+      });
+      return;
+    }
+
+    if (!this.recetaEditandoId) return;
+
+    this.recetaService.actualizarReceta(this.recetaEditandoId, dto).subscribe({
+      next: () => {
         this.cancel();
         this.cargarRecetas();
       },
-      error: (err) => {
-        console.error("Error al crear receta:", err);
-      },
-      complete: () => {
-        console.log("Petición POST completada");
-      }
-    })
+      error: err => console.error('Error al actualizar receta', err)
+    });
   }
 
   cargarRecetas() {
     this.recetaService.listarRecetas().subscribe({
-      next: (data) => {
-        this.recetas = data;
-        },
-      error: err => {
-        console.error("Error al cargar recetas ", err);
-      },
-      complete: () => console.log('Recetas cargadas')
-     })
+      next: data => (this.recetas = data),
+      error: err => console.error('Error al cargar recetas', err)
+    });
   }
 
   eliminarReceta(id: number) {
     this.recetaService.eliminar(id).subscribe({
-      next: () => {
-        console.log("Receta eliminada");
-        this.cargarRecetas();
-      },
-      error: (err) => console.error("Error al eliminar", err)
+      next: () => this.cargarRecetas(),
+      error: err => console.error('Error al eliminar', err)
     });
   }
 
   async confirmarEliminar(id: number) {
     const alert = await this.alertController.create({
       header: 'Eliminar receta',
-      message: '¿Seguro que quieres elminar esta receta?',
+      message: '¿Seguro que quieres eliminar esta receta?',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            this.eliminarReceta(id);
-          }
-        }
+        { text: 'Cancelar', role: 'cancel' },
+        { text: 'Eliminar', role: 'destructive', handler: () => this.eliminarReceta(id) }
       ]
     });
     await alert.present();
   }
 
-  /**
-   * PASOS
-   */
-
+  // PASOS (UI)
   agregarPaso() {
-    this.pasos.push({ descripcion: "" });
+    this.pasos.push({ descripcion: '' });
   }
 
   recopilarPasos() {
     return this.pasos.map((p, index) => ({
       orden: index + 1,
-      descripcion: p.descripcion
-    }));
+      descripcion: (p.descripcion ?? '').trim()
+    })).filter(p => p.descripcion.length > 0);
   }
 
   eliminarPaso(index: number) {
-    if (this.pasos.length > 1) {
-      this.pasos.splice(index, 1);
-    }
+    if (this.pasos.length > 1) this.pasos.splice(index, 1);
   }
 
+  // INGREDIENTES (UI)
+  insertarIngrediente(ing: IngredienteGlobal) {
+    const existe = this.formularioReceta.ingredientes.some(i => i.idIngrediente === ing.idIngrediente);
+    if (existe) return;
 
+    this.formularioReceta.ingredientes.push({
+      idIngrediente: ing.idIngrediente,
+      nombre: ing.nombre,
+      cantidad: 0,
+      unidad: 'GRAMO'
+    } as any);
+
+    this.busquedaIngrediente = '';
+    this.ingredientesDisponibles = [];
+  }
+
+  buscarIngredientes() {
+    this.ingredienteService.listar(this.busquedaIngrediente).subscribe({
+      next: data => (this.ingredientesDisponibles = data),
+      error: err => console.error('Error buscando ingredientes', err)
+    });
+  }
+
+  eliminarIngrediente(idIngrediente: number) {
+    this.formularioReceta.ingredientes =
+      this.formularioReceta.ingredientes.filter(i => i.idIngrediente !== idIngrediente);
+  }
 }

@@ -3,34 +3,40 @@
 <ion-content [fullscreen]="true">
 
   <div class="recetas-list">
-    @for(receta of recetas; track receta.idReceta) {
+    @for (receta of recetas; track receta.idReceta) {
       <app-receta-card
         [receta]="receta"
-        (eliminar)="confirmarEliminar($event)">
+        (eliminar)="confirmarEliminar($event)"
+        (editar)="abrirEditar($event)">
       </app-receta-card>
     }
   </div>
 
-
-  <ion-button id="open-modal"  class="btn-icon">
+  <ion-button class="btn-icon" (click)="abrirCrear()">
     <ion-icon name="add-outline"></ion-icon>
   </ion-button>
 
-  <!-- MODAL AÑADIR RECETA -->
-
-  <ion-modal trigger="open-modal" >
+  <ion-modal>
     <ng-template>
+
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
             <ion-button (click)="cancel()">Cancelar</ion-button>
           </ion-buttons>
-          <ion-title>Añadir Receta</ion-title>
+
+          <ion-title>
+            @if (modoModal === 'crear') { Añadir Receta } @else { Editar Receta }
+          </ion-title>
+
           <ion-buttons slot="end">
-            <ion-button [strong]="true" (click)="crearReceta()">Añadir</ion-button>
+            <ion-button [strong]="true" (click)="guardarReceta()">
+              @if (modoModal === 'crear') { Añadir } @else { Guardar }
+            </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
+
       <ion-content class="ion-padding">
 
         <ion-item>
@@ -39,8 +45,8 @@
             labelPlacement="stacked"
             type="text"
             placeholder="Título..."
-            [(ngModel)]="formularioReceta.titulo"
-          ></ion-input>
+            [(ngModel)]="formularioReceta.titulo">
+          </ion-input>
         </ion-item>
 
         <ion-item>
@@ -49,8 +55,8 @@
             labelPlacement="stacked"
             type="text"
             placeholder="URL imagen receta..."
-            [(ngModel)]="formularioReceta.imagen"
-          ></ion-input>
+            [(ngModel)]="formularioReceta.imagen">
+          </ion-input>
         </ion-item>
 
         <ion-item>
@@ -59,68 +65,137 @@
             labelPlacement="stacked"
             type="text"
             placeholder="Descripción..."
-            [(ngModel)]="formularioReceta.descripcion"
-          ></ion-input>
+            [(ngModel)]="formularioReceta.descripcion">
+          </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-select id ="dificultad" label="Dificultad">
+          <ion-select
+            label="Dificultad"
+            interface="popover"
+            [(ngModel)]="formularioReceta.dificultad">
             <ion-select-option value="FACIL">Fácil</ion-select-option>
-            <ion-select-option value="MEDIO">Intermedia</ion-select-option>
+            <ion-select-option value="MEDIA">Intermedia</ion-select-option>
             <ion-select-option value="DIFICIL">Difícil</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
-          <ion-select id ="tiempoPreparacion" label="Tiempo de Preparación">
-            <ion-select-option value="5">5 min</ion-select-option>
-            <ion-select-option value="10">10 min</ion-select-option>
-            <ion-select-option value="15">15 min</ion-select-option>
-            <ion-select-option value="20">20 min</ion-select-option>
-            <ion-select-option value="30">30 min</ion-select-option>
-            <ion-select-option value="45">45 min</ion-select-option>
-            <ion-select-option value="60">60 min</ion-select-option>
+          <ion-select
+            label="Tiempo de Preparación"
+            interface="popover"
+            [(ngModel)]="formularioReceta.tiempoPreparacion">
+            <ion-select-option [value]="5">5 min</ion-select-option>
+            <ion-select-option [value]="10">10 min</ion-select-option>
+            <ion-select-option [value]="15">15 min</ion-select-option>
+            <ion-select-option [value]="20">20 min</ion-select-option>
+            <ion-select-option [value]="30">30 min</ion-select-option>
+            <ion-select-option [value]="45">45 min</ion-select-option>
+            <ion-select-option [value]="60">60 min</ion-select-option>
           </ion-select>
         </ion-item>
 
-          <ion-item>
-            <ion-select id ="preferenciaAlimentaria" label="Preferencias Almientaria" placeholder="Selección múltiple" [multiple]="true">
-              <ion-select-option value="VEGANO">Vegano</ion-select-option>
-              <ion-select-option value="VEGETARIANO">Vegetariano</ion-select-option>
-              <ion-select-option value="SIN_LACTOSA">Sin Lactosa</ion-select-option>
-              <ion-select-option value="SIN_GLUTEN">Sin Gluten</ion-select-option>
-              <ion-select-option value="KETO">Keto</ion-select-option>
-              <ion-select-option value="OMNIVORO">Omnívoro</ion-select-option>
-            </ion-select>
-          </ion-item>
+        <!-- INGREDIENTES -->
+        <ion-item>
+          <ion-input
+            label="Buscar ingrediente"
+            labelPlacement="stacked"
+            placeholder="Ej: tomate"
+            [(ngModel)]="busquedaIngrediente"
+            (ionInput)="buscarIngredientes()">
+          </ion-input>
+        </ion-item>
 
+        @if (ingredientesDisponibles.length > 0) {
           <ion-list>
-            @for (p of pasos; track $index) {
-              <ion-item lines="full">
-                <ion-input
-                  label="Paso {{$index + 1}}"
-                  labelPlacement="stacked"
-                  type="text"
-                  placeholder="Descripción del paso..."
-                  [(ngModel)]="p.descripcion"
-                ></ion-input>
-
-                <ion-button
-                  fill="clear"
-                  (click)="eliminarPaso($index)"
-                  slot="end"
-                  [disabled]="pasos.length === 1"
-                >
-                  <ion-icon name="trash-outline"></ion-icon>
-                </ion-button>
+            @for (ing of ingredientesDisponibles; track ing.idIngrediente) {
+              <ion-item [button]="true" (click)="insertarIngrediente(ing)">
+                <ion-label>{{ ing.nombre }}</ion-label>
               </ion-item>
             }
           </ion-list>
+        }
+
+        @if (formularioReceta.ingredientes.length > 0) {
+          <ion-list>
+            @for (ing of formularioReceta.ingredientes; track ing.idIngrediente) {
+
+              <ion-item lines="full">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-label style="font-weight: 600;">
+                        {{ ing.nombre }}
+                      </ion-label>
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-input
+                        type="number"
+                        label="Cantidad"
+                        labelPlacement="stacked"
+                        [(ngModel)]="ing.cantidad">
+                      </ion-input>
+                    </ion-col>
+
+                    <ion-col size="4">
+                      <ion-select
+                        label="Unidad"
+                        labelPlacement="stacked"
+                        interface="popover"
+                        [(ngModel)]="ing.unidad">
+                        <ion-select-option value="GRAMO">g</ion-select-option>
+                        <ion-select-option value="MILILITRO">ml</ion-select-option>
+                        <ion-select-option value="UNIDAD">ud</ion-select-option>
+                        <ion-select-option value="CUCHARADA">cda</ion-select-option>
+                        <ion-select-option value="TAZA">taza</ion-select-option>
+                      </ion-select>
+                    </ion-col>
+
+                    <ion-col size="2" class="ion-text-right">
+                      <ion-button fill="clear" color="danger" (click)="eliminarIngrediente(ing.idIngrediente)">
+                        <ion-icon name="trash-outline"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>
+
+            }
+          </ion-list>
+        }
+
+        <!-- PASOS -->
+        <ion-list>
+          @for (p of pasos; track $index) {
+            <ion-item lines="full">
+              <ion-input
+                label="Paso {{$index + 1}}"
+                labelPlacement="stacked"
+                type="text"
+                placeholder="Descripción del paso..."
+                [(ngModel)]="p.descripcion">
+              </ion-input>
+
+              <ion-button
+                fill="clear"
+                slot="end"
+                (click)="eliminarPaso($index)"
+                [disabled]="pasos.length === 1">
+                <ion-icon name="trash-outline" color="danger"></ion-icon>
+              </ion-button>
+            </ion-item>
+          }
+        </ion-list>
+
         <ion-button expand="block" color="secondary" (click)="agregarPaso()">
           Añadir paso
         </ion-button>
 
       </ion-content>
+
     </ng-template>
   </ion-modal>
 

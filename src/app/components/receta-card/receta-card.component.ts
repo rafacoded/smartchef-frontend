@@ -52,4 +52,12 @@ export class RecetaCardComponent{
   verDetalle() {
     this.router.navigate(['/detalle-receta', this.receta.idReceta]);
   }
+
+  @Output() editar = new EventEmitter<Receta>();
+
+  onEditar(ev: Event) {
+    ev.stopPropagation();
+    this.editar.emit(this.receta);
+  }
+
 }

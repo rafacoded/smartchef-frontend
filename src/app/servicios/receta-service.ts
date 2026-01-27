@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Receta, RecetaCrear} from "../modelos/Receta";
 import {Observable} from "rxjs";
 import {AsociarIngrediente} from "../modelos/AsociarIngrediente";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,10 @@ import {AsociarIngrediente} from "../modelos/AsociarIngrediente";
 
 export class RecetaService {
 
-  private apiUrl = "/api"
+  private baseUrl = environment.apiUrl;
+
+
+  private apiUrl = `${this.baseUrl}/api`;
 
   private http = inject(HttpClient);
 
@@ -26,6 +30,10 @@ export class RecetaService {
 
   crearReceta(receta : RecetaCrear): Observable<Receta> {
     return this.http.post<Receta>(this.apiUrl + "/recetas", receta)
+  }
+
+  actualizarReceta(id: number, receta: RecetaCrear) {
+    return this.http.put<void>(`${this.apiUrl}/recetas/${id}`, receta);
   }
 
   asociarIngrediente(asociacion : AsociarIngrediente) {

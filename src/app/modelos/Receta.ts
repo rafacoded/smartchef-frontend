@@ -1,3 +1,4 @@
+import { IngredienteReceta } from "./IngredienteReceta";
 import { PasoReceta } from "./PasoReceta";
 
 export interface Receta {
@@ -16,7 +17,8 @@ export interface RecetaCrear {
   titulo: string;
   descripcion: string;
   tiempoPreparacion: number;
-  dificultad: string;
-  pasos: PasoReceta[];
+  dificultad: 'FACIL' | 'MEDIA' | 'DIFICIL' | null;
   imagen: string | null;
+  pasos: PasoReceta[];
+  ingredientes: IngredienteReceta[];
 }

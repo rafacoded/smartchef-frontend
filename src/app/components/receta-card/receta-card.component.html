@@ -19,7 +19,7 @@
 
   <ion-card-content class="card-actions">
     <ion-buttons>
-      <ion-button>
+      <ion-button (click)="onEditar($event)">
         <ion-icon fill="clear" name="pencil-outline"></ion-icon>
       </ion-button>
       <ion-button color="danger" (click)="onEliminar()">

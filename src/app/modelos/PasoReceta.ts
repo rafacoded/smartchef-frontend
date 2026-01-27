@@ -3,3 +3,7 @@ export interface PasoReceta {
   orden?: number;
   descripcion?: string;
 }
+
+export interface PasoForm {
+  descripcion: string;
+}
