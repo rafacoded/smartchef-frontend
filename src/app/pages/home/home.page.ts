@@ -129,7 +129,6 @@ export class HomePage implements OnInit {
   }
 
   cancel() {
-    // reset por si reabres
     this.formularioReceta = this.crearFormularioVacio();
     this.pasos = [{ descripcion: '' }];
     this.ingredientesDisponibles = [];
@@ -138,7 +137,6 @@ export class HomePage implements OnInit {
   }
 
   guardarReceta() {
-    // Validaciones mínimas (backend valida también)
     if (!this.formularioReceta.titulo?.trim()) return;
     if (!this.formularioReceta.descripcion?.trim()) return;
     if (!this.formularioReceta.dificultad) return;

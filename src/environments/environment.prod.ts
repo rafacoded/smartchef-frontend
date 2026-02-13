@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://smartchef-backend-hl0l.onrender.com'
+  apiUrl: 'https://smartchef-backend-hl0l.onrender.com/api',
+  appUrl: 'https://smartchef-backend-hl0l.onrender.com'
+
 };

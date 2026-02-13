@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Iniciar sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-input
+        label="Email"
+        labelPlacement="stacked"
+        name="email"
+        type="email"
+        [(ngModel)]="form.email"
+        [required]="true"
+        email>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Contraseña"
+        labelPlacement="stacked"
+        type="password"
+        [(ngModel)]="form.password"
+        name="password"
+        [required]="true">
+      </ion-input>
+    </ion-item>
+
+    <ion-button expand="block" class="ion-margin-top" (click)="onSubmit()" [disabled]="loading">
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </ion-button>
+
+    <ion-button expand="block" fill="clear" (click)="goRegister()">
+      No tengo cuenta → Registrarme
+    </ion-button>
+  </form>
+</ion-content>

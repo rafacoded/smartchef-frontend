@@ -1,5 +1,22 @@
 <app-header title="Favoritos"></app-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  @if (loading) {
+    <p>Cargando favoritos...</p>
+  } @else {
+
+    @if (favoritos.length === 0) {
+      <p>No tienes recetas guardadas todavía</p>
+    } @else {
+      <div class="grid">
+        @for (r of favoritos; track r.idReceta) {
+          <app-receta-card [receta]="r"></app-receta-card>
+        }
+      </div>
+    }
+
+  }
 
 </ion-content>
+

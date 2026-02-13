@@ -37,7 +37,8 @@ export class RecetaCardComponent{
   @Input() receta!: Receta;
   @Output() eliminar = new EventEmitter<number>();
 
-  onEliminar() {
+  onEliminar(ev: Event) {
+    ev?.stopPropagation();
     this.eliminar.emit(this.receta.idReceta);
   }
 
@@ -50,6 +51,7 @@ export class RecetaCardComponent{
     }
   }
   verDetalle() {
+    if (!this.receta?.idReceta) return;
     this.router.navigate(['/detalle-receta', this.receta.idReceta]);
   }
 

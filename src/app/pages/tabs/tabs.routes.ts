@@ -3,7 +3,7 @@ import { TabsPage } from './tabs.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
@@ -38,12 +38,8 @@ export const routes: Routes = [
           import('../detalle-lista/detalle-lista.page').then((m) => m.DetalleListaPage),
       },
 
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
 
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/home',
-    pathMatch: 'full',
   },
 ];

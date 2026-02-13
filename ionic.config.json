@@ -1,7 +1,5 @@
 {
   "name": "smartchef",
-  "integrations": {
-    "capacitor": {}
-  },
+  "integrations": { "capacitor": {} },
   "type": "angular-standalone"
 }

@@ -14,7 +14,7 @@ export class RecetaService {
   private baseUrl = environment.apiUrl;
 
 
-  private apiUrl = `${this.baseUrl}/api`;
+  private apiUrl = `${this.baseUrl}`;
 
   private http = inject(HttpClient);
 

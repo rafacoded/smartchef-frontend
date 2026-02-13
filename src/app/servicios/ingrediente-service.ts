@@ -8,7 +8,7 @@ export class IngredienteService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `${environment.apiUrl}`;
 
   listar(q?: string) {
     const params = q ? { params: { q } } : {};

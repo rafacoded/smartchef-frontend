@@ -22,3 +22,12 @@ export interface RecetaCrear {
   pasos: PasoReceta[];
   ingredientes: IngredienteReceta[];
 }
+
+export interface RecetaResumen {
+  idReceta: number;
+  titulo: string;
+  imagen: string;
+  categoria: string;
+  dificultad: string;
+}
+

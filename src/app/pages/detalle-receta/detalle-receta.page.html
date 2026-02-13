@@ -1,9 +1,19 @@
-<ion-header>
+<ion-header >
   <ion-toolbar class="sc-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/home" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>Receta</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="abrirModalQR()">
+        <ion-icon name="qr-code-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="abrirEscaner()">
+        <ion-icon name="camera-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
@@ -78,7 +88,7 @@
       <section class="sc-section">
         <h2 class="sc-section-title">Preparación</h2>
 
-        <ion-list inset="true">
+        <ion-list [inset]="true">
 
           @for (paso of receta.pasos; track paso.orden) {
             <ion-item lines="full" class="step-item">
@@ -98,4 +108,49 @@
   }
 
 </ion-content>
+
+<ion-modal
+  [isOpen]="modalScanOpen"
+  (didPresent)="onScanDidPresent()"
+  (didDismiss)="onScanDismiss()"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Escanear QR</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarEscaner()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <div id="qr-reader" style="width:100%; min-height:320px;"></div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="modalQrOpen" (didDismiss)="modalQrOpen = false">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>QR de la receta</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="modalQrOpen = false">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      @if (qrImgSrc) {
+        <img [src]="qrImgSrc" style="width: 100%; max-width: 340px; display:block; margin: 0 auto;" />
+        <p style="text-align:center; font-size: 12px; opacity:.7;">{{ qrData }}</p>
+      } @else {
+        <p>Generando QR...</p>
+      }
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
 

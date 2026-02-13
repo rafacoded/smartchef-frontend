@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/tabs/home"></ion-back-button>
     </ion-buttons>
-    <!-- Centrar texto, cambiar estilo-->
+
     <ion-title>Mi perfil</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button color="danger">
+      <ion-button color="danger" (click)="logout()">
         <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -22,40 +22,41 @@
       <ion-icon name="camera-outline" class="camera-icon"></ion-icon>
     </ion-avatar>
     <input type="file" accept="image/*" #fileInput (change)="onAvatarChange($event)" hidden />
+
     <h2>{{ username }}</h2>
+    @if (user) {
+      <p>{{ user.email }}</p>
+    }
+    @else {
+      <p class="muted">Email no disponible</p>
+    }
+
     <p>Primer registro: {{ userSince }}</p>
   </div>
 
-  <!-- Panel personal -->
-
   <ion-card>
-
     <ion-card-content>
       <ion-list>
-        <!-- Configuración (prop) -->
         <ion-item [button]="true" [detail]="true">
           <ion-icon name="settings-outline" slot="start"></ion-icon>
           <ion-label>Configuración</ion-label>
         </ion-item>
-        <!-- Notificaciones (prop) -->
+
         <ion-item [button]="true" routerLink="/historial" [detail]="true">
           <ion-icon name="calendar-outline" slot="start"></ion-icon>
           <ion-label>Registro semanal</ion-label>
         </ion-item>
 
-        <!-- Términos y condiciones (prop) -->
         <ion-item [button]="true" [detail]="true">
           <ion-icon name="document-text-outline" slot="start"></ion-icon>
           <ion-label>Términos y condiciones</ion-label>
         </ion-item>
 
-        <!-- Logros (susceptible a cambio) -->
         <ion-item [button]="true" [detail]="true">
           <ion-icon name="bar-chart-outline" slot="start"></ion-icon>
           <ion-label>Mis logros y estadísticas</ion-label>
         </ion-item>
 
-        <!-- Notificaciones -->
         <ion-item [button]="true" [detail]="true">
           <ion-icon name="notifications-outline" slot="start"></ion-icon>
           <ion-label>Notificaciones</ion-label>
@@ -64,10 +65,9 @@
     </ion-card-content>
   </ion-card>
 </ion-content>
-<!-- Footer -->
+
 <ion-footer>
   <ion-text color="medium" class="ion-text-center">
     <p>Versión 1.0.0 — SmartChef © 2025</p>
   </ion-text>
 </ion-footer>
-
