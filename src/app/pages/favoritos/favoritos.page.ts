@@ -11,7 +11,7 @@ import {Receta} from "../../modelos/Receta";
   templateUrl: 'favoritos.page.html',
   styleUrls: ['favoritos.page.scss'],
   standalone: true,
-  imports: [IonContent, HeaderComponent, IonList, IonItem, IonLabel, RecetaCardComponent,],
+  imports: [IonContent, HeaderComponent, RecetaCardComponent,],
 })
 export class FavoritosPage implements OnInit{
   constructor() {}

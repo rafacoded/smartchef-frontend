@@ -1,4 +1,11 @@
-<app-header title="Home"></app-header>
+<app-header title="Home" xmlns:ion-button="http://www.w3.org/1999/html">
+  <ion-button header-end (click)="abrirEscaner()">
+    <ion-icon name="qr-code-outline"></ion-icon>
+  </ion-button>
+  <ion-button header-end (click)="abrirCrear()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+  </app-header>
 
 <ion-content [fullscreen]="true">
 
@@ -12,9 +19,6 @@
     }
   </div>
 
-  <ion-button class="btn-icon" (click)="abrirCrear()">
-    <ion-icon name="add-outline"></ion-icon>
-  </ion-button>
 
   <ion-modal>
     <ng-template>
@@ -197,6 +201,29 @@
       </ion-content>
 
     </ng-template>
+  </ion-modal>
+
+  <ion-modal
+    [isOpen]="modalScanOpen"
+    (didPresent)="onScanDidPresent()"
+    (didDismiss)="onScanDismiss()">
+
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Escanear QR</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarEscaner()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <div id="qr-reader" style="width: 100%;"></div>
+        <ion-note>Apunta al QR de una receta para guardarla </ion-note>
+      </ion-content>
+    </ng-template>
+
   </ion-modal>
 
 </ion-content>

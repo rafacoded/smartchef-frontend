@@ -21,7 +21,6 @@ import {QrGeneratorService} from "../../servicios/qrgenerator-service";
 import {QrService} from "../../servicios/qr-service";
 
 import {GuardadoRecetaService} from "../../servicios/guardado-receta-service";
-import {HeaderComponent} from "../../components/header/header.component";
 
 @Component({
   selector: 'app-detalle-receta',
@@ -36,15 +35,12 @@ export class DetalleRecetaPage implements OnInit {
     addIcons({ timeOutline, chevronBackOutline, addCircleOutline, cartOutline, qrCodeOutline, cameraOutline })
   }
 
-  private router = inject(Router);
-  private qrService = inject(QrService);
   private qrGen = inject(QrGeneratorService);
   private toast = inject(ToastController);
 
 
   private route = inject(ActivatedRoute);
   private recetaService = inject(RecetaService);
-  private guardadoRecetaService = inject(GuardadoRecetaService);
 
 
   // TODO: sustituir por ingredientes reales del backend ASAP
@@ -65,7 +61,6 @@ export class DetalleRecetaPage implements OnInit {
       this.recetaService.obtenerPorId(Number(id)).subscribe({
         next: data => {
           this.receta = data;
-          this.checkAutoFav();
         },
         error: err => console.error("Error cargando receta", err)
       });
@@ -119,68 +114,6 @@ export class DetalleRecetaPage implements OnInit {
     }
   }
 
-  async abrirEscaner() {
-    this.modalScanOpen = true;
-  }
-
-
-  async checkAutoFav() {
-    const fav = this.route.snapshot.queryParamMap.get('fav');
-    if (fav !== '1') return;
-    if (!this.receta?.idReceta) return;
-
-    this.guardadoRecetaService.guardarReceta(this.receta.idReceta).subscribe({
-      next: async () => {
-        await this.showToast('Receta guardada en favoritos ⭐');
-      },
-      error: async () => {
-        await this.showToast('Inicia sesión para guardar recetas');
-        this.router.navigateByUrl('/login');
-      }
-    });
-
-  }
-
-  private scanning = false;
-
-  async onScanDidPresent() {
-    if (this.scanning) return;
-    this.scanning = true;
-
-    // este log debería salir TRUE sí o sí
-    const el = document.getElementById('qr-reader');
-    console.log('[QR] qr-reader exists?', !!el);
-
-    try {
-      const decoded = await this.qrService.escanearQR('qr-reader');
-      this.modalScanOpen = false;
-      this.scanning = false;
-
-      await this.navegarDesdeQR(decoded);
-    } catch (e: any) {
-      console.error('[QR] scan error:', e);
-      this.scanning = false;
-      await this.showToast('Error escaneando: ' + (e?.message ?? e));
-      this.modalScanOpen = false;
-    }
-  }
-
-
-  private async navegarDesdeQR(value: string) {
-    try {
-      const url = new URL(value);
-      this.router.navigateByUrl(url.pathname + url.search);
-      return;
-    } catch {}
-
-    const id = Number(value);
-    if (!Number.isNaN(id)) {
-      this.router.navigate(['/recetas', id]);
-    } else {
-      await this.showToast('QR no reconocido 😵‍💫');
-    }
-  }
-
   private async showToast(message: string) {
     const t = await this.toast.create({
       message,
@@ -190,14 +123,6 @@ export class DetalleRecetaPage implements OnInit {
     await t.present();
   }
 
-  async cerrarEscaner() {
-    this.modalScanOpen = false;
-    await this.qrService.stop();
-  }
-
-  async onScanDismiss() {
-    await this.qrService.stop();
-  }
 
 
 

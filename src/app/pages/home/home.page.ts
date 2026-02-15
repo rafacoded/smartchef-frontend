@@ -2,21 +2,25 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonModal,
   IonItem, IonInput, IonSelect, IonSelectOption, IonButtons, IonList,
-  IonIcon, IonLabel, IonGrid, IonRow, IonCol
+  IonIcon, IonLabel, IonGrid, IonRow, IonCol, IonNote
 } from '@ionic/angular/standalone';
 
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { addOutline, pencilOutline, trashOutline } from 'ionicons/icons';
-import { AlertController } from '@ionic/angular';
+import { readerOutline, addOutline, pencilOutline, trashOutline, qrCodeOutline } from 'ionicons/icons';
+import {AlertController, IonicModule} from '@ionic/angular';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { Receta, RecetaCrear } from '../../modelos/Receta';
 import { RecetaService } from '../../servicios/receta-service';
 import { RecetaCardComponent } from '../../components/receta-card/receta-card.component';
+import { ToastController } from '@ionic/angular';
 
 import { IngredienteService } from '../../servicios/ingrediente-service';
 import { IngredienteGlobal } from '../../modelos/IngredienteGlobal';
+import {QrService} from "../../servicios/qr-service";
+import {GuardadoRecetaService} from "../../servicios/guardado-receta-service";
+import {Router} from "@angular/router";
 
 type ModoModal = 'crear' | 'editar';
 
@@ -40,7 +44,7 @@ type RecetaDetalle = {
     IonHeader, IonIcon, IonToolbar, IonTitle, IonContent, HeaderComponent,
     IonButton, IonModal, IonItem, IonInput, FormsModule, IonSelect,
     IonSelectOption, IonButtons, IonList, RecetaCardComponent, IonLabel,
-    IonGrid, IonRow, IonCol
+    IonGrid, IonRow, IonCol, IonNote
   ]
 })
 export class HomePage implements OnInit {
@@ -50,6 +54,14 @@ export class HomePage implements OnInit {
   private recetaService = inject(RecetaService);
   private ingredienteService = inject(IngredienteService);
   private alertController = inject(AlertController);
+
+  private qrService = inject(QrService);
+  private guardadoRecetaService = inject(GuardadoRecetaService);
+  private toast = inject(ToastController);
+  private router = inject(Router);
+
+  modalScanOpen = false;
+  private scanning = false;
 
   protected recetas: Receta[] = [];
 
@@ -64,7 +76,7 @@ export class HomePage implements OnInit {
   protected formularioReceta: RecetaCrear = this.crearFormularioVacio();
 
   constructor() {
-    addIcons({ trashOutline, pencilOutline, addOutline });
+    addIcons({ readerOutline, trashOutline, pencilOutline, addOutline, qrCodeOutline });
   }
 
   ngOnInit() {
@@ -239,5 +251,89 @@ export class HomePage implements OnInit {
   eliminarIngrediente(idIngrediente: number) {
     this.formularioReceta.ingredientes =
       this.formularioReceta.ingredientes.filter(i => i.idIngrediente !== idIngrediente);
+  }
+
+  // QR Code functions
+
+  abrirEscaner() {
+    this.modalScanOpen = true;
+  }
+
+  async cerrarEscaner() {
+    this.modalScanOpen = false;
+    await this.qrService.stop();
+  }
+
+  async onScanDismiss() {
+    await this.qrService.stop();
+    this.scanning = false;
+  }
+
+  async onScanDidPresent() {
+    if (this.scanning) return;
+    this.scanning = true;
+
+    const el = document.getElementById('qr-reader');
+    console.log('[QR] qr-reader exists?', !!el);
+
+    try {
+      const decoded = await this.qrService.escanearQR('qr-reader');
+      console.log('[QR] decoded:', decoded);
+
+      await this.qrService.stop();
+      this.modalScanOpen = false;
+      this.scanning = false;
+
+      await this.handleScannedValue(decoded);
+
+    } catch (e: any) {
+      console.error('[QR] scan error:', e);
+      await this.qrService.stop();
+      this.modalScanOpen = false;
+      this.scanning = false;
+
+      await this.showToast('Error escaneando: ' + (e?.message ?? e));
+    }
+  }
+
+  private async handleScannedValue(value: string) {
+    try {
+      const url = new URL(value);
+
+      const fav = url.searchParams.get('fav');
+      const match = url.pathname.match(/\/detalle-receta\/(\d+)/);
+
+      if (fav === '1' && match) {
+        const idReceta = Number(match[1]);
+        console.log('[QR] auto-fav receta:', idReceta);
+
+        this.guardadoRecetaService.guardarReceta(idReceta).subscribe({
+          next: async () => await this.showToast('Guardada en favoritos ⭐'),
+          error: async (err) => {
+            console.error('[QR] guardar error:', err);
+            await this.showToast('Inicia sesión para guardar');
+            this.router.navigateByUrl('/login');
+          }
+        });
+
+        return;
+      }
+
+      await this.router.navigateByUrl(url.pathname + url.search);
+      return;
+
+    } catch {
+      const id = Number(value);
+      if (!Number.isNaN(id)) {
+        await this.router.navigate(['/detalle-receta', id]);
+      } else {
+        await this.showToast('QR no reconocido');
+      }
+    }
+  }
+
+  private async showToast(message: string) {
+    const t = await this.toast.create({ message, duration: 1500, position: 'bottom' });
+    await t.present();
   }
 }

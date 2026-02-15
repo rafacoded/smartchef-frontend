@@ -12,13 +12,23 @@ import { FormsModule } from '@angular/forms';
 import { UsuarioService } from 'src/app/servicios/usuario-service';
 import { AuthService } from 'src/app/servicios/auth-service';
 import { Usuario } from 'src/app/modelos/Usuario';
+import {
+  IonAvatar,
+  IonBackButton,
+  IonButton,
+  IonButtons, IonCard, IonCardContent, IonContent, IonFooter,
+  IonHeader,
+  IonIcon, IonItem, IonLabel, IonList, IonText,
+  IonTitle,
+  IonToolbar
+} from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.page.html',
   styleUrls: ['./usuario.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, FormsModule],
+  imports: [RouterModule, FormsModule, IonButton, IonIcon, IonTitle, IonButtons, IonBackButton, IonToolbar, IonHeader, IonContent, IonAvatar, IonFooter, IonText, IonItem, IonLabel, IonList, IonCardContent, IonCard],
   providers: [DatePipe]
 })
 export class UsuarioPage implements OnInit {
