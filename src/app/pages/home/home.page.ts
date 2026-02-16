@@ -7,8 +7,8 @@ import {
 
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { readerOutline, addOutline, pencilOutline, trashOutline, qrCodeOutline } from 'ionicons/icons';
-import {AlertController, IonicModule} from '@ionic/angular';
+import { readerOutline, addOutline, pencilOutline, trashOutline, saveOutline } from 'ionicons/icons';
+import {AlertController} from '@ionic/angular';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { Receta, RecetaCrear } from '../../modelos/Receta';
@@ -76,7 +76,7 @@ export class HomePage implements OnInit {
   protected formularioReceta: RecetaCrear = this.crearFormularioVacio();
 
   constructor() {
-    addIcons({ readerOutline, trashOutline, pencilOutline, addOutline, qrCodeOutline });
+    addIcons({ readerOutline, trashOutline, pencilOutline, addOutline, saveOutline });
   }
 
   ngOnInit() {
